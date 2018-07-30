@@ -1,4 +1,4 @@
-class Player < Person
+class Player < Dealer
   attr_reader :name
   attr_accessor :skip
 
@@ -9,11 +9,9 @@ class Player < Person
 
   def skipped?
     skip
-  end  
+  end
 
   def added?
     hand.count == 3
   end
-
-
 end

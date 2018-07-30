@@ -1,4 +1,4 @@
-class MainProgramm
+class MainProgram
   def initialize(interface)
     @interface = interface
   end
@@ -18,8 +18,6 @@ class MainProgramm
     @deck.draw_card_for(@player, 2)
     @deck.draw_card_for(@dealer, 2)
     @interface.print_player_hand
-    # @interface.print_dealer_hand_hidden
-    # binding.pry
     @player.take_bet
     @dealer.take_bet
     turn(@player)
@@ -28,111 +26,109 @@ class MainProgramm
   def skip(person)
     if person == @player
       if @player.skipped?
-        @interface.player_skipped_already 
+        @interface.player_skipped_already
         return
       end
- 
       @player.skip = true
       turn(@dealer)
     else
       if @player.added?
         open()
-      else  
+      else
         turn(@player)
-      end  
-    end  
+      end
+    end
   end
 
   def add(person)
     @deck.draw_card_for(person, 1)
-
     if person == @player
       @interface.print_player_hand
       @player.skipped? ? open() : turn(@dealer)
-    else      
+    else
       @player.added? ? open() : turn(@player)
-    end  
-  end  
+    end
+  end
 
   def turn(person)
     if person == @player
       @interface.print_dealer_hand_hidden if person
       player_turn()
-    else  
+    else
       dealer_turn()
-    end  
+    end
   end
 
   def player_turn
-    option = choose_option    
-    self.send(option,@player)
-  end  
+    option = choose_option
+    self.send(option, @player)
+  end
 
   def dealer_turn
-    @dealer.hand_value >= 17 ? skip(@dealer) : add(@dealer)    
-  end  
+    @dealer.hand_value >= 17 ? skip(@dealer) : add(@dealer)
+  end
 
   def open(person = nil)
     @interface.print_player_hand
     @interface.print_dealer_hand
-
     if @player.hand_value > 21
       @interface.dealer_win
       @dealer.bank += 20
     elsif @dealer.hand_value > 21
       @interface.player_win
-      @dealer.bank += 20
+      @player.bank += 20
     elsif @player.hand_value == @dealer.hand_value
       @interface.draw
       @player.bank += 10
       @dealer.bank += 10
-    elsif (21-@player.hand_value) < (21-@dealer.hand_value)
+    elsif (21 - @player.hand_value) < (21 - @dealer.hand_value)
       @interface.player_win
       @player.bank += 20
     else
       @interface.dealer_win
       @dealer.bank += 20
-    end  
+    end
+    when_no_money
+    @interface.bank_statements
+    restart_game
+  end
 
-    if @player.bank <= 0 || @dealer.bank <= 0 
-      puts "game over"
+  def when_no_money
+    if @player.bank <= 0 || @dealer.bank <= 0
+      @interface.game_over
       exit!
     end
-    @interface.bank_statements
-    option = @interface.restart_message
+  end
 
+  def restart_game
+    option = @interface.restart_message
     if option == "yes"
       @deck.reset_deck!(@player, @dealer)
       @player.skip = false
       initiate_round
     else
-      puts "bye bye"
+      @interface.bye
     end
-  end  
-  
-  def choose_option
-    option = ""
-    loop do 
-      puts "Select option from the following"
-      puts "skip" if !@player.skipped?
-      puts "add" if !@player.added?
-      puts "open"
-      option = gets.chomp
-
-      if option == "skip" && @player.skipped?
-        puts "no skipping"
-        next
-      end 
-
-      if option == "add" && @player.added?
-        puts "no adding"
-        next 
-      end
-
-      break;
-    end
-    
-    option
   end
 
+  def choose_option
+    option = ""
+    loop do
+      @interface.select_option
+      @interface.skip_option if !@player.skipped?
+      @interface.add_option if !@player.added?
+      @interface.open_option
+      option = gets.chomp
+      if option == "skip" && @player.skipped?
+        @interface.no_skipping
+        next
+      end
+      if option == "add" && @player.added?
+        @interface.no_adding
+        next
+      end
+      break
+    end
+    option
+  end
 end

@@ -6,12 +6,12 @@ class Interface
   end
 
   def request_player_name
-    puts 'What is your name?'
+    puts "What is your name?"
   end
 
   def print_player_hand
     puts "Players hand:\n#{@player.humanize_hand}Value: #{@player.hand_value}\n------\n"
-  end 
+  end
 
   def print_dealer_hand_hidden
     puts "Dealers hand:"
@@ -19,16 +19,16 @@ class Interface
       puts "Card: *"
     end
     puts "------\n"
-  end 
+  end
 
   def print_dealer_hand
      puts "Dealers hand:\n#{@dealer.humanize_hand}Value: #{@dealer.hand_value}\n------\n"
-  end 
+  end
 
   def player_skipped_already
     puts "Player has already skipped"
   end
-  
+
   def player_win
     puts "player wins"
   end
@@ -42,7 +42,7 @@ class Interface
   end
 
   def restart_message
-    puts "Play again? yes/no"
+    puts "Play again? type yes/no: "
     gets.chomp
   end
 
@@ -50,33 +50,35 @@ class Interface
     puts "BANK -- Player: #{@player.bank}, Dealer: #{@dealer.bank}"
   end
 
+  def select_option
+    puts "Select option from the following: "
+  end
 
-  # Break up puts into interface
-  # def choose_option
-  #   loop do 
-  #     puts "Select option from the following"
-  #     puts "skip" if !@player.skipped?
-  #     puts "add" if !@player.added?
-  #     puts "open"
-  #     option = gets.chomp
+  def skip_option
+    puts "skip"
+  end
 
-  #     if option == "skip" && @player.skipped?
-  #       "no skipping"
-  #       next
-  #     end 
+  def add_option
+    puts "add"
+  end
 
-  #     if option == "add" && @player.skipped?
-  #       "no adding"
-  #       next 
-  #     end
+  def open_option
+    puts "open"
+  end
 
-  #     break;
-  #   end
+  def no_skipping
+    puts "no skipping"
+  end
 
-  #   option
-  #   # skip, add, open
-  # end
+  def no_adding
+    puts "no adding"
+  end
 
+  def game_over
+    puts "Game over!"
+  end
 
- 
+  def bye
+    puts "Bye-Bye!"
+  end
 end
