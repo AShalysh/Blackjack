@@ -1,0 +1,2 @@
+class Dealer < Person
+end
