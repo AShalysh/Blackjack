@@ -47,7 +47,7 @@ class Interface
   end
 
   def bank_statements
-    puts "BANK -- Player: #{@player.bank}, Dealer: #{@dealer.bank}"
+    puts "BANK -- Player: #{@player.bank.amount}, Dealer: #{@dealer.bank.amount}"
   end
 
   def select_option
@@ -64,6 +64,10 @@ class Interface
 
   def open_option
     puts "open"
+  end
+
+  def get_option
+    gets.chomp
   end
 
   def no_skipping

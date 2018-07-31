@@ -1,18 +1,20 @@
 class MainProgram
   def initialize(interface)
     @interface = interface
+    @dealer = Dealer.new
+    @deck = Deck.new
   end
 
   def start
     player_name = @interface.user_given_player_name.capitalize
     @player = Player.new(player_name)
-    @dealer = Dealer.new
-    @deck = Deck.new
     @interface.player = @player
     @interface.dealer = @dealer
     @interface.deck = @deck
     initiate_round
   end
+
+  private
 
   def initiate_round
     @deck.draw_card_for(@player, 2)
@@ -33,7 +35,7 @@ class MainProgram
       turn(@dealer)
     else
       if @player.added?
-        open()
+        open
       else
         turn(@player)
       end
@@ -44,18 +46,18 @@ class MainProgram
     @deck.draw_card_for(person, 1)
     if person == @player
       @interface.print_player_hand
-      @player.skipped? ? open() : turn(@dealer)
+      @player.skipped? ? open : turn(@dealer)
     else
-      @player.added? ? open() : turn(@player)
+      @player.added? ? open : turn(@player)
     end
   end
 
   def turn(person)
     if person == @player
       @interface.print_dealer_hand_hidden if person
-      player_turn()
+      player_turn
     else
-      dealer_turn()
+      dealer_turn
     end
   end
 
@@ -71,30 +73,40 @@ class MainProgram
   def open(person = nil)
     @interface.print_player_hand
     @interface.print_dealer_hand
-    if @player.hand_value > 21
-      @interface.dealer_win
-      @dealer.bank += 20
-    elsif @dealer.hand_value > 21
-      @interface.player_win
-      @player.bank += 20
-    elsif @player.hand_value == @dealer.hand_value
-      @interface.draw
-      @player.bank += 10
-      @dealer.bank += 10
-    elsif (21 - @player.hand_value) < (21 - @dealer.hand_value)
-      @interface.player_win
-      @player.bank += 20
-    else
-      @interface.dealer_win
-      @dealer.bank += 20
-    end
+    determine_winner
     when_no_money
     @interface.bank_statements
     restart_game
   end
 
+  def determine_winner
+    if @player.hand_value > 21
+      dealer_wins
+    elsif @dealer.hand_value > 21
+      player_wins
+    elsif @player.hand_value == @dealer.hand_value
+      @interface.draw
+      @player.draw
+      @dealer.draw
+    elsif (21 - @player.hand_value) < (21 - @dealer.hand_value)
+      player_wins
+    else
+      dealer_wins
+    end
+  end
+
+  def player_wins
+    @interface.player_win
+    @player.win
+  end
+
+  def dealer_wins
+    @interface.dealer_win
+    @dealer.win
+  end
+
   def when_no_money
-    if @player.bank <= 0 || @dealer.bank <= 0
+    if @player.bank.amount <= 0 || @dealer.bank.amount <= 0
       @interface.game_over
       exit!
     end
@@ -118,7 +130,7 @@ class MainProgram
       @interface.skip_option if !@player.skipped?
       @interface.add_option if !@player.added?
       @interface.open_option
-      option = gets.chomp
+      option = @interface.get_option
       if option == "skip" && @player.skipped?
         @interface.no_skipping
         next

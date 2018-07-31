@@ -1,13 +1,13 @@
 class Dealer
-  attr_accessor :hand, :bank
+  attr_accessor :hand
+  attr_reader :bank
+
+  BET_AMOUNT = 10
+  WIN_AMOUNT = 20
 
   def initialize
-    @bank = 100
+    @bank = Bank.new(100)
     @hand = []
-  end
-
-  def take_bet
-    @bank -= 10
   end
 
   def hand_value
@@ -32,5 +32,17 @@ class Dealer
       hand_readable.concat(card.humanize + " \n")
     end
     hand_readable
+  end
+
+  def take_bet
+    @bank.amount -= BET_AMOUNT
+  end
+
+  def win
+    @bank.amount += WIN_AMOUNT
+  end
+
+  def draw
+    @bank.amount += BET_AMOUNT
   end
 end

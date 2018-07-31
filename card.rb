@@ -10,15 +10,15 @@ class Card
   end
 
   def value
-    v = @name.to_i
-    if v == 0
-      v = if @name == "A"
+    val_card = @name.to_i
+    if ["J","Q","K","A"].include?(@name)
+      val_card = if @name == "A"
         11
       else
         10
       end
     end
-    v
+    val_card
   end
 
   def humanize

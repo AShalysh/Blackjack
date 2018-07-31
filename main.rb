@@ -1,6 +1,7 @@
 require 'pry-nav'
 require_relative 'main_program'
 require_relative 'interface'
+require_relative 'bank'
 require_relative 'dealer'
 require_relative 'player'
 require_relative 'deck'
