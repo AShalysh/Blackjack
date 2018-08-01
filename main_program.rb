@@ -8,9 +8,12 @@ class MainProgram
   def start
     player_name = @interface.user_given_player_name.capitalize
     @player = Player.new(player_name)
+    @bank = Bank.new(@player, @dealer)
+
     @interface.player = @player
     @interface.dealer = @dealer
     @interface.deck = @deck
+
     initiate_round
   end
 
@@ -20,8 +23,7 @@ class MainProgram
     @deck.draw_card_for(@player, 2)
     @deck.draw_card_for(@dealer, 2)
     @interface.print_player_hand
-    @player.take_bet
-    @dealer.take_bet
+    @bank.take_bet
     turn(@player)
   end
 
@@ -82,31 +84,32 @@ class MainProgram
   def determine_winner
     if @player.hand_value > 21
       dealer_wins
-    elsif @dealer.hand_value > 21
+    elsif player_win?
       player_wins
     elsif @player.hand_value == @dealer.hand_value
       @interface.draw
-      @player.draw
-      @dealer.draw
-    elsif (21 - @player.hand_value) < (21 - @dealer.hand_value)
-      player_wins
+      @bank.draw
     else
       dealer_wins
     end
   end
 
+  def player_win?
+    @dealer.hand_value > 21 || (@player.hand_value > @dealer.hand_value)
+  end
+
   def player_wins
     @interface.player_win
-    @player.win
+    @bank.win(@player)
   end
 
   def dealer_wins
     @interface.dealer_win
-    @dealer.win
+    @bank.win(@dealer)
   end
 
   def when_no_money
-    if @player.bank.amount <= 0 || @dealer.bank.amount <= 0
+    if @player.amount <= 0 || @dealer.amount <= 0
       @interface.game_over
       exit!
     end

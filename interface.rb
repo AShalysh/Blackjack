@@ -47,7 +47,7 @@ class Interface
   end
 
   def bank_statements
-    puts "BANK -- Player: #{@player.bank.amount}, Dealer: #{@dealer.bank.amount}"
+    puts "BANK -- Player: #{@player.amount}, Dealer: #{@dealer.amount}"
   end
 
   def select_option

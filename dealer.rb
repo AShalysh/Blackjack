@@ -1,12 +1,8 @@
 class Dealer
-  attr_accessor :hand
-  attr_reader :bank
-
-  BET_AMOUNT = 10
-  WIN_AMOUNT = 20
+  attr_accessor :hand, :amount
 
   def initialize
-    @bank = Bank.new(100)
+    @amount = 100
     @hand = []
   end
 
@@ -34,15 +30,8 @@ class Dealer
     hand_readable
   end
 
-  def take_bet
-    @bank.amount -= BET_AMOUNT
-  end
-
-  def win
-    @bank.amount += WIN_AMOUNT
-  end
-
-  def draw
-    @bank.amount += BET_AMOUNT
+  def make_bet(bet_amount)
+    @amount -= bet_amount
+    bet_amount
   end
 end
